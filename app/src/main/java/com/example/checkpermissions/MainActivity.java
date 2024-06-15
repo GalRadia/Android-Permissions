@@ -21,6 +21,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (checkPermissions()) {
-                Intent intent = new Intent(MainActivity.this, SecretsActivity.class);
+                Intent intent = new Intent(MainActivity.this, SplashScreen.class);
                 startActivity(intent);
                 finish();
             }
@@ -56,33 +57,37 @@ public class MainActivity extends AppCompatActivity {
         String permissions = "";
         if (isDarkMode()) {
             isAllPermissionsGranted = false;
-            permissions += "Dark Mode, ";
+            permissions += ", Dark Mode";
         }
         if (!isBrightnessAutomatic()) {
             isAllPermissionsGranted = false;
-            permissions += "Brightness Automatic, ";
+            permissions += ", Brightness Automatic";
         }
         if (isMuted()) {
             isAllPermissionsGranted = false;
-            permissions += "Muted, ";
+            permissions += ", Muted";
         }
         if (!isWifiConnected()) {
             isAllPermissionsGranted = false;
-            permissions += "Wifi Connected, ";
+            permissions += ", Wifi Connected";
         }
         if (getVolumePercent() <= 70) {
             isAllPermissionsGranted = false;
-            permissions += "Volume Percent, ";
+            permissions += ", Volume Percent";
         }
         if (getBatteryLevel() <= 50) {
             isAllPermissionsGranted = false;
-            permissions += "Battery Level, ";
+            permissions += ", Battery Level";
         }
         if (isAllPermissionsGranted) {
             return true;
         } else {
-            Snackbar.make(findViewById(R.id.main), "Permissions not granted: " + permissions, Snackbar.LENGTH_LONG).show();
-           // Toast.makeText(this, "Permissions not granted: " + permissions, Toast.LENGTH_SHORT).show();
+            permissions = permissions.substring(2);
+            Snackbar
+                    .make(findViewById(R.id.main), "Permissions not granted: " + permissions, BaseTransientBottomBar.LENGTH_LONG)
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_FADE)
+                    .setTextMaxLines(5)
+                    .show();
             return false;
         }
     }
@@ -116,11 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
-        /*
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return mWifi.isConnected();
-         */
+
     }
 
     private float getVolumePercent() {
